@@ -1,223 +1,74 @@
 ---
-layout: cv
-title: Wode "Nimo" Ni
-email:
-  url: mailto:wode.nimo.ni@gmail.com
-  text: wode.nimo.ni@gmail.com
-homepage:
-  url: https://wodenimoni.com
-  text: wodenimoni.com
+name: 韩启正
+title: 高级前端工程师
+location: 北京
+phone: ""
+email: ""
+homepage: ""
+paper: A4
 ---
 
-# Wode **Ni**
+# 韩启正
 
-<!--
-include contact information from the front matter
-Supported arguments:
-    - homepage: url, text
-    - phone
-    - email
--->
+高级前端工程师 | 7 年经验 | 前端基建与 AI 应用工程化
 
-{% include cv-contact.html %}
+男 · 1996.07 · 本科 · 南开大学滨海学院 · 计算机科学与技术（2015 - 2019）
 
-## Education
+## 个人简介
 
-### **Carnegie Mellon University** `2018.9 - 2024.10`
+长期负责组件库、复杂中后台与平台型前端基建，职业路径从 Moka 80 人前端团队的组件库核心维护者，发展为蓝标 15 人团队组件库从 0 到 1 的技术负责人。近年聚焦 AI 应用工程化，能够独立完成需求判断、方案设计、核心实现、质量控制与上线运维；擅长在业务目标、组织成本和技术复杂度之间做取舍，而非只完成既定开发任务。
 
-```
-Pittsburgh, PA
-```
+## 工作经历
 
-- Ph.D. in Software Engineering
-- Dissertation: _Authoring Conceptual Diagrams by Codifying Visual Representations_
-- Co-advised by [Ken Koedinger](http://pact.cs.cmu.edu/koedinger.html) and [Josh Sunshine](http://www.cs.cmu.edu/~jssunshi/)
+### **蓝色光标集团（BlueFocus）** `2023.11 - 至今`
 
-### **Columbia University** `2016.9 - 2018.5`
+_高级前端开发工程师 · 广告营销 ToB_
 
-```
-New York, NY
-```
+负责前端团队技术基建与 AI 应用工程化，主导组件库建设、联盟营销 Agent 等探索与落地，较少承担单纯页面需求。
 
-- B.S. in Computer Science, _Magna Cum Laude_
-- Vision, Graphics track
+### **北京希瑞亚斯科技有限公司（Moka）** `2020.07 - 2023.08`
 
-### **Dickinson College** `2013.9 - 2016.5`
+_前端开发工程师 · HR SaaS ToB_
 
-```
-Carlisle, PA
-```
+平台组成员、Sugar Design 核心维护者，参与组件需求判断、技术方案评审、开发、Code Review、测试与版本发布全流程。
 
-- B.S. in Computer Science, _Summa Cum Laude_
-- Computer Science Departmental Honors
+### **中发集团** `2019.06 - 2020.05`
 
-## Professional Experience
+_前端开发工程师 · 智能楼宇物联网 ToB_
 
-### **Brilliant** `2024.11 - `
+负责设备管理、业务配置与数据可视化等前端开发。
 
-_Senior Research Engineer_
+## 技术能力
 
-Taken my expertise in designing developing domain-specific languages and toolings for diagram authoring tools, I am working on Brilliant's authoring platform for interactive lessons in STEM topics.
+- **前端与架构：**React、TypeScript、复杂中后台、组件库 / 设计系统、配置驱动 UI、性能与工程化治理；能够根据团队规模和业务模式选择抽象边界。
+- **AI 工程化：**Agent Loop、Tool Use、Skill、JSON Schema / Contract、SSE、结构化抽取、幻觉治理与人工审核闭环；重视能力边界与可验证性。
+- **全栈交付：**Next.js、Node.js、Drizzle ORM、PostgreSQL、Docker、CI/CD；能够独立覆盖设计、开发、数据迁移、部署和运行维护。
 
+## 项目经历
 
-### **Apple** `2022.5 - 2022.9`
+### **企业级组件库与前端研发体系建设**
 
-_Research Intern - Machine Intelligence_<br>
+长期参与企业级组件库建设，从 Moka Sugar Design 核心维护，到 Bluevision 组件库从 0 到 1 负责人，推动复杂业务组件沉淀、研发规范统一和团队共建机制落地。
 
-At [Apple AI/ML](https://machinelearning.apple.com/), I worked on prototypes and features to improve the developer experience. Shipped [improved Swift code completion](https://developer.apple.com/documentation/xcode-release-notes/xcode-14_3-release-notes#Source-Editor) in Xcode and designed an syntactic code search algorithm published at PLDI'24.
+- 担任 Moka Sugar Design 组件库维护者，参与 NewTable、QueryTable 等复杂业务组件建设，支撑 80 人前端团队与日数十万级 PV 业务场景，沉淀高频表格、查询、页面搭建能力。
+- 独立负责 Bluevision 组件库从 0 到 1 建设，沉淀 80+ 基础组件、业务组件与页面级组件，服务团队 3 条主要业务线和 7 名前端开发，减少重复造轮子和高频胶水代码。
+- 建立组件文档、接入规范、API / 样式规范、review、共建、版本迭代和破坏性变更治理机制，推动组件库从个人维护演进为团队共建，并统一团队 UI、交互、API 与开发规范。
+- 通过页面级组件复用承接通用 UI 与交互逻辑，在组件能力覆盖的新页面场景中节省约 80% 搭建时间，使开发者主要聚焦字段配置和业务逻辑。
 
-### **Microsoft Research** `2020.5 - 2020.8`
+### **数字营销 Agent 平台建设**
 
-_Research Intern_<br>
-Worked with the [PROSE](https://www.microsoft.com/en-us/research/group/prose/) team (mentored by [Titus Barik](https://www.barik.net/)) on improving developer productivity in Visual Studio Code. I interviewed developers to elicit their needs for code transformation tools in editors. Inspired by the empirical data and relevant work in program synthesis, I designed **reCode**, an interaction model for rapidly performing complex code transformation using the familiar find-and-replace experience, published at UIST'21.
+面向联盟营销和广告运营场景，负责数字营销 Agent 能力建设与 OpenClaw 集成，覆盖 Media Kit 解析、联盟客信息结构化、广告创编和多广告平台批量发布。
 
-<!-- ### **Carnegie Mellon University, Research Experiences for Undergraduate** `2017.5 - 2017.8`
+- 负责数字营销 Agent 能力建设与 OpenClaw 集成落地，覆盖 Media Kit 解析、联盟客信息结构化、广告素材创编和多广告平台批量发布等核心业务场景。
+- 设计并实现 Media Kit 解析 Agent 与对应 Skill，将媒体资源包中的领域、报价、受众、资源形式等非结构化信息抽取为结构化数据，在解析成功率可控前提下，将人工下载、阅读、整理成本减少 90% 以上。
+- 基于 OpenClaw channel plugin 完成数字营销平台对接，并开发配套 Agent Chat UI，承接平台侧素材、授权账户和 CLI 能力，支持运营按项目完成广告资源编排与多平台发布。
+- 在广告创编场景中，支持广告资源发布至 14 个广告平台，将原先至少 1 天、且容易因操作不规范导致账号风险的流程压缩至约 10 分钟，显著降低重复操作和发布失误成本。
 
-_Research Assistant_<br>
-**Penrose** is a system that automatically visualizes mathematics using two domain-specific languages: **Substance** and **Style**. Co-advised by [Jonathan Aldrich](https://www.cs.cmu.edu/~./aldrich/), [Keenan Crane](https://www.cs.cmu.edu/~kmcrane/), [Joshua Sunshine](http://www.cs.cmu.edu/~jssunshi/), and [Katherine Ye](https://www.cs.cmu.edu/~kqy/), I designed and implemented the Style language, and extended the Substance language to support functions and logically quantified statements.
+### **春座 Plus 养老院智能推荐 Agent 产品**
 
-### **Columbia University, Computer Graphics and User Interfaces Lab** `2017.1 - 2017.5`
+独立开发并上线春座 Plus，一个面向养老院推荐业务的 AI 产品，围绕养老院信息收录、用户需求分析、精品养老院合作与智能推荐构建核心能力。
 
-_Research Assistant_<br>
-Worked with prof. Steven Feiner, on **Cyber Affordance Visualization in Augumented Reality** project. Developed a Microsoft Hololens application that visualizes the Columbia campus in AR environment. -->
-
-
-
-## Publications
-
-### [**Codifying Visual Representations**]({{ page.homepage.url }}/assets/diagrams-24-penrose.pdf)
-**Wode Ni**, Sam Estep, Hwei-Shin Harriman, Jiří Minarčík, and Joshua Sunshine. <br>
-_In Proceedings of the 14th International Conference on the Theory and Application of Diagrams (DIAGRAMS'24)._ <br>
-[[PDF]({{ page.homepage.url }}/assets/diagrams-24-penrose.pdf)]
-
-### [**Rose: Composable Autodiff for the Interactive Web**](https://arxiv.org/pdf/2402.17743.pdf)
-Sam Estep, **Wode Ni**, Raven Rothkopf, and Joshua Sunshine. <br>
-_In Proceedings of the 38th European Conference on Object-Oriented Programming (ECOOP'24)._ <br>
-[[PDF](https://arxiv.org/pdf/2402.17743.pdf)]
-
-### [**Edgeworth: Efficient and Scalable Authoring of Visual Thinking Activities**]({{ page.homepage.url }}/assets/las-24-edgeworth.pdf)
-**Wode Ni**, Sam Estep, Hwei-Shin Harriman, Ken Koedinger, and Joshua Sunshine. <br>
-_In Proceedings of the 11th ACM Conference on Learning @ Scale (L@S'24)._ <br>
-[[PDF]({{ page.homepage.url }}/assets/las-24-edgeworth.pdf)]
-
-
-### [**Minkowski Penalties: Robust Differentiable Constraint Enforcement for Vector Graphics**]({{ page.homepage.url }}/assets/siggraph-24-minkowski.pdf)
-Jiří Minarčík, Sam Estep, **Wode Ni**, and Keenan Crane. <br>
-_In ACM SIGGRAPH 2024 Conference Proceedings (SIGGRAPH'24)._ <br>
-[[PDF]({{ page.homepage.url }}/assets/siggraph-24-minkowski.pdf)]
-
-### **Syntactic Code Search with Sequence-to-Tree Matching**
-Gabriel Matute, **Wode Ni**, Titus Barik, Alvin Cheung, and Sarah E. Chasins.<br> 
-_To appear in Proceedings of the ACM on Programming Languages (PLDI'24)._ <br>
-[[PDF](https://dl.acm.org/doi/pdf/10.1145/3656460)]
-
-### [**reCode: A Lightweight Find-and-Replace Interaction in the IDE for Transforming Code by Example**]({{ page.homepage.url }}/assets/uist-21-recode.pdf)
-**Wode Ni**, Joshua Sunshine, Vu Le, Sumit Gulwani, and Titus Barik.<br> 
-_In Proceedings of the 34th ACM Symposium on User Interface Software and Technology (UIST'21)._ <br>
-[[PDF]({{ page.homepage.url }}/assets/uist-21-recode.pdf)]
-[[BibTeX]({{ page.homepage.url }}/assets/uist-21-recode.txt)]
-[[video preview](https://youtu.be/fMdHK9UrgQ4)]
-[[talk](https://youtu.be/_GQ8E7EMMws)]
-
-
-### [**Penrose: From Mathematical Notation to Beautiful Diagrams**](http://penrose.ink/media/Penrose_SIGGRAPH2020.pdf)
-Katherine Ye, **Wode Ni**, Max Krieger, Dor Ma'ayan, Joshua Sunshine, Jonathan Aldrich, and Keenan Crane.<br> 
-_ACM Transactions on Graphics (SIGGRAPH'20)._<br>
-[[PDF](http://penrose.ink/media/Penrose_SIGGRAPH2020.pdf)]
-[[BibTeX]({{ page.homepage.url }}/assets/siggraph20-penrose.txt)]
-[[www](http://penrose.ink/siggraph20.html)]
-[[repo](https://github.com/penrose/penrose)]
-
-### [**How Domain Experts Create Conceptual Diagrams and Implications for Tool Design**]({{ page.homepage.url }}/assets/chi-20-natural-diagramming.pdf)
-
-**Wode Ni\***, Dor Ma'ayan\*, Katherine Ye, Chinmay Kulkarni, and Joshua Sunshine.<br>
-<i class="fas fa-award"></i> <strong>Best Paper Honourable Mention</strong><br>
-_In Proceedings of the 2020 CHI Conference on Human Factors in Computing Systems (CHI'20)._<br>
-[[PDF]({{ page.homepage.url }}/assets/chi-20-natural-diagramming.pdf)]
-[[BibTeX]({{ page.homepage.url }}/assets/chi-20-natural-diagramming.txt)]
-
-
-### [**Generating Domain-Specific Programs for Diagram Authoring with Large Language Models**](https://wodenimoni.com/assets/splash-23-llm-diagrams.pdf)
-
-Rijul Jain, **Wode Ni**, and Joshua Sunshine.<br>
-_SPLASH 2023: Companion Proceedings of the 2023 ACM SIGPLAN International Conference on Systems, Programming, Languages, and Applications: Software for Humanity (SPLASH'23 EA)._<br>
-[[PDF](https://wodenimoni.com/assets/splash-23-llm-diagrams.pdf)]
-
-
-### [**Defining Visual Narratives for Mathematics Declaratively**](http://2019.plateau-workshop.org/assets/papers-2019/9.pdf)
-
-Max Krieger, **Wode Ni**, and Joshua Sunshine.<br>
-_Evaluation and Usability of Programming Languages and Tools (PLATEAU 2019), co-located with UIST._<br>
-[[PDF](http://2019.plateau-workshop.org/assets/papers-2019/9.pdf)]
-[[slides]({{ page.homepage.url }}/assets/plateau-19-presentation.pdf)]
-
-### [**Designing Declarative Language Tutorials: a Guided and Individualized Approach**](http://2019.plateau-workshop.org/assets/papers-2019/2.pdf)
-
-Anael Kuperwajs Cohen, **Wode Ni**, and Joshua Sunshine.<br>
-_Evaluation and Usability of Programming Languages and Tools (PLATEAU 2019), co-located with UIST._<br>
-[[PDF](http://2019.plateau-workshop.org/assets/papers-2019/2.pdf)]
-[[slides]({{ page.homepage.url }}/assets/plateau-19-presentation.pdf)]
-
-### [**Substance and Style: domain-specific languages for mathematical diagrams**](https://2017.splashcon.org/event/dsldi-2017-substance-and-style-domain-specific-languages-for-mathematical-diagrams)
-
-**Wode Ni\***, Katherine Ye\*, Joshua Sunshine, Jonathan Aldrich, and Keenan Crane.<br> _Domain-Specific Language Design and Implementation (DSLDI 2017), co-located with SPLASH._ <br>
-[[PDF]({{ page.homepage.url }}/assets/dsldi.pdf)]
-[[slides]({{ page.homepage.url }}/assets/dsldi-presentation.pdf)]
-[[www](http://penrose.ink)]
-[[repo](https://github.com/penrose/penrose)]
-
-### [**Whiteboard Scanning Using Super-Resolution**](http://scholar.dickinson.edu/student_honors/221/)
-
-**Wode Ni**.<br> _Dickinson College Honors Theses. Paper 221._<br>
-[[PDF]({{ page.homepage.url }}/assets/superres.pdf)]
-
-## Patent
-
-Titus Barik, Gustavo Soares, Piyush Arora, Peter Groenewegen, Sumit Gulwani, Ameya Ketkar, Vu Le, **Wode Ni**, David Pugh, Arjun Radhakrishna, Ivan Radicek, Ashish Tiwari, Mark Wilson-Thomas. Edit automation using an anchor target list. *US Patent 2024/11941372 B2 2024*.
-
-Gustavo Soares, Piyush Arora, Titus Barik, Peter Groenewegen, Sumit Gulwani, Ameya Ketkar, Vu Le, **Wode Ni**, David Pugh, Arjun Radhakrishna, Ivan Radicek, Ashish Tiwari, Mark Wilson-Thomas. Edit automation using a temporal edit pattern.  *US Patent 2024/11875136 B2	2024*.
-## Teaching
-
-Teaching Assistant, **Foundations of Software Engineering (17-313)** `CMU, 2022` <br>
-Teaching Assistant, **Crafting Software (17-450/17-950)** `CMU, 2022` <br>
-Teaching Assistant, **Programming Languages and Translators (COMS 4115)** `Columbia, 2017 - 2018` <br>
-Teaching Assistant, **Introduction to Java II (COMP 132)** `Dickinson, 2016` <br>
-Peer Tutor, **Data Structures and Problem Solving (COMP 232)** `Dickinson, 2016` <br>
-Computer Lab Consultant `Dickinson, 2014 - 2016` <br>
-
-## Mentoring
-
-[Kyle Lee](https://github.com/kyleleesea) (CMU) `CMU, 2024` <br>
-[Griffin Teller](https://griffinteller.com/) (CMU) `CMU, 2024` <br>
-[Rijul Jain](https://rijuljain.com/) (Williams College) `CMU, 2023 - 2024` <br>
-[Yiliang "Leo" Liang](https://www.linkedin.com/in/yiliang-liang-a3631a138/) (University of Michigan) `CMU, 2022 - 2023` <br>
-[Hwei-Shin Harriman](https://hsharriman.github.io/) (Olin College of Engineering) `CMU, 2021 - 2022` <br>
-[Helena Yang](https://heleaf.me/) (CMU) `CMU, 2021` <br>
-[Max Krieger](https://a9.io/) (CMU) `CMU, 2018 - 2021` <br>
-[Courtney Miller](https://courtney-e-miller.github.io/) (New College of Florida) `CMU, 2019` <br>
-[Anael Kuperwajs Cohen](https://anaelkuperwajs.github.io/) (Macalester College) `CMU, 2019` <br>
-
-## Honors & Awards
-
-CMU Open Source Office Fellowship, supported by the Alfred P. Sloan Foundation `CMU, 2023-2024` <br>
-CHI'20 Best Paper Honourable Mention Award `CMU, 2020` <br>
-Phi Beta Kappa `Dickinson, 2018` <br>
-Excellence in Computer Science Award `Columbia, 2018` <br>
-Travel Award PL Mentoring Workshop (PLMW) `SPLASH, 2018` <br>
-Tau Beta Pi, Engineering Honor Society `Columbia, 2017` <br>
-Computer Science Departmental Honors `Dickinson, 2016` <br>
-Pi Mu Epsilon, Mathematics Honor Society `Dickinson, 2016` <br>
-Upsilon Pi Epsilon, Computer Science Honor Society `Dickinson, 2016` <br>
-Alpha Lambda Delta, First year Honor Society `Dickinson, 2013`<br>
-John Montgomery Scholarship `Dickinson, 2013` <br>
-
-## Service
-
-S3D Department head search committee `CMU, 2024` <br>
-Sub-reviewer `OOPSLA'21, VL/HCC'21` <br>
-Reviewer `CHI'21, CHI'22, SIGGRAPH'22, UIST'23, CHI'24` <br>
-Research Experiences for Undergraduates in Software Engineering Admission Committee `CMU, 2019 - 2023` <br>
-
-<!-- ### Footer
-
-Last updated: May 2013 -->
+- 作为唯一开发者，独立完成春座 Plus 从需求确认、业务调研、技术方案设计、数据结构化、Agent / Skill 设计、前后端实现、测试到部署上线的完整交付。
+- 基于结构化养老院数据与领域 Skill 构建养老院推荐 Agent，分析用户地域、预算、照护需求和偏好，为目标用户推荐符合条件的养老院。
+- 围绕“精品养老院合作”策略设计产品能力，通过养老院信息收录、推荐逻辑和建联流程，支撑从用户需求匹配到养老院合作转化的业务闭环。
+- 项目已在线运行并有真实用户使用，可作为完整 AI Agent 产品进行演示，体现从业务理解、产品设计、Agent 能力建设到工程落地的端到端交付能力。

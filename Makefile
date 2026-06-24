@@ -1,8 +1,13 @@
-start:
-	docker-compose up
+.PHONY: dev start serve build pdf clean
+
+dev start serve:
+	npm run dev
 
 build:
-	docker-compose build web
+	npm run build
 
-exec:
-	docker-compose exec web /bin/bash
+pdf:
+	npm run pdf
+
+clean:
+	npm run clean

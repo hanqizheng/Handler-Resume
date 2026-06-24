@@ -1,0 +1,12 @@
+{
+  "name": "handler-resume",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "start": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "pdf": "node scripts/export-pdf.mjs",
+    "clean": "rm -rf _site resume.pdf tmp"
+  }
+}
