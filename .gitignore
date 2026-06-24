@@ -1,6 +1,9 @@
 _site/
 .DS_Store
 /resume.pdf
+resume.private.md
+*.private.md
+private/
 node_modules/
 tmp/
 .cache/

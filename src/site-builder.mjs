@@ -1,12 +1,12 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { renderResumeDocument } from "./resume-markdown.mjs";
 
-export function buildSite({ root, liveReload = false } = {}) {
+export function buildSite({ root, liveReload = false, source = process.env.RESUME_SOURCE || "index.md" } = {}) {
   if (!root) throw new Error("buildSite requires a root directory");
 
   const siteDir = join(root, "_site");
-  const markdownPath = join(root, "index.md");
+  const markdownPath = resolve(root, source);
   const markdown = readFileSync(markdownPath, "utf8");
   const html = renderResumeDocument(markdown, { liveReload });
 
@@ -22,5 +22,6 @@ export function buildSite({ root, liveReload = false } = {}) {
   return {
     siteDir,
     htmlPath: join(siteDir, "index.html"),
+    markdownPath,
   };
 }
