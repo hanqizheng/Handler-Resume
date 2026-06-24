@@ -84,6 +84,7 @@ function cleanYamlValue(value) {
 
 function renderResumeBody(markdown, data) {
   const state = {
+    data,
     html: [],
     paragraph: [],
     listOpen: false,
@@ -91,6 +92,7 @@ function renderResumeBody(markdown, data) {
     sectionOpen: false,
     entryOpen: false,
     heroParagraphCount: 0,
+    heroLocationUsed: false,
     entryParagraphCount: 0,
   };
 
@@ -202,10 +204,20 @@ function flushParagraph(state) {
   if (!state.paragraph.length) return;
 
   const raw = state.paragraph.join("\n").trim();
-  const rendered = renderInline(raw).replace(/\n/g, "<br>");
   const className = paragraphClass(state, raw);
+  const rendered = renderParagraphText(state, className, raw);
   state.html.push(`            <p class="${className}">${rendered}</p>`);
   state.paragraph = [];
+}
+
+function renderParagraphText(state, className, raw) {
+  if (className === "resume-meta" && !state.heroLocationUsed) {
+    const location = contactValue(state.data.location);
+    state.heroLocationUsed = true;
+    if (location) return `${renderInline(location)} · ${renderInline(raw).replace(/\n/g, "<br>")}`;
+  }
+
+  return renderInline(raw).replace(/\n/g, "<br>");
 }
 
 function paragraphClass(state, raw) {
@@ -259,7 +271,6 @@ function closeHero(state) {
 
 function renderContact(data) {
   const items = [
-    contactValue(data.location) && ["Location", contactValue(data.location)],
     contactValue(data.phone) && ["Phone", contactValue(data.phone)],
     contactValue(data.email) && ["Email", contactValue(data.email)],
     contactValue(data.homepage) && ["Web", contactValue(data.homepage)],
