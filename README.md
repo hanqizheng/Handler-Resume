@@ -1,6 +1,6 @@
 # Handler Resume
 
-A focused Markdown resume renderer. The source of truth is `index.md`; the
+A focused Markdown resume renderer. The public sample source is `index.md`; the
 project builds a polished HTML preview and exports a print-ready `resume.pdf`
 with Chrome's PDF engine.
 
@@ -18,8 +18,17 @@ Open the printed URL, usually:
 http://127.0.0.1:4000
 ```
 
-Edit `index.md`. The dev server rebuilds automatically and refreshes the
+Edit `index.md` for a public sample resume. The dev server rebuilds automatically and refreshes the
 browser preview.
+
+For a real private resume, keep the file out of git and point the renderer at it:
+
+```sh
+cp index.md resume.private.md
+RESUME_SOURCE=resume.private.md npm run dev
+```
+
+`resume.private.md`, `*.private.md`, `private/`, and `resume.pdf` are ignored by git.
 
 ## Export PDF
 
@@ -27,6 +36,12 @@ From the terminal:
 
 ```sh
 npm run pdf
+```
+
+For a private source:
+
+```sh
+RESUME_SOURCE=resume.private.md npm run pdf
 ```
 
 From the local preview, click `Export PDF`.

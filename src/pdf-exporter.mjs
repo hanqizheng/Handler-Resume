@@ -4,10 +4,10 @@ import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import { buildSite } from "./site-builder.mjs";
 
-export function exportPdf({ root, output = "resume.pdf", build = true } = {}) {
+export function exportPdf({ root, output = "resume.pdf", build = true, source = process.env.RESUME_SOURCE || "index.md" } = {}) {
   if (!root) throw new Error("exportPdf requires a root directory");
 
-  const site = build ? buildSite({ root, liveReload: false }) : { htmlPath: join(root, "_site", "index.html") };
+  const site = build ? buildSite({ root, liveReload: false, source }) : { htmlPath: join(root, "_site", "index.html") };
   const outputPath = resolve(root, output);
   const chromePath = findChrome();
 

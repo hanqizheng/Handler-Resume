@@ -11,6 +11,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const siteDir = join(root, "_site");
 const host = process.env.HOST || "127.0.0.1";
 const preferredPort = Number(process.env.PORT || 4000);
+const source = process.env.RESUME_SOURCE || "index.md";
 const clients = new Set();
 
 let currentPort = preferredPort;
@@ -37,7 +38,7 @@ function startServer(port) {
 
     if (requestUrl.pathname === "/__export-pdf" && request.method === "POST") {
       try {
-        const pdf = exportPdf({ root });
+        const pdf = exportPdf({ root, source });
         build();
         broadcast("built");
         json(response, 200, { ok: true, outputPath: pdf.outputPath, bytes: pdf.bytes });
@@ -86,15 +87,15 @@ function serveStatic(requestUrl, response) {
 
 function build() {
   try {
-    const result = buildSite({ root, liveReload: true });
-    console.log(`Built ${result.htmlPath}`);
+    const result = buildSite({ root, liveReload: true, source });
+    console.log(`Built ${result.htmlPath} from ${result.markdownPath}`);
   } catch (error) {
     console.error(error);
   }
 }
 
 function watchSources() {
-  const targets = ["index.md", "src", "media"].map((name) => join(root, name));
+  const targets = [source, "src", "media"].map((name) => resolve(root, name));
   let timer;
 
   for (const target of targets) {
