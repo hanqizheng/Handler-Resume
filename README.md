@@ -1,51 +1,92 @@
-nimo-markdown-cv
-================
+# Handler Resume
 
-<p align="center">
-<img src="assets/README-63bf9.png" width="700">
-</p>
+A focused Markdown resume renderer. The source of truth is `index.md`; the
+project builds a polished HTML preview and exports a print-ready `resume.pdf`
+with Chrome's PDF engine.
 
-A curriculum vitae template that lets you write your cv in Markdown and supports both HTML and PDF output formats. To generate the cv, we use [Jekyll](https://jekyllrb.com/).
+There is no Jekyll, Ruby, Docker, or bundler step in the main workflow.
 
-The project is a fork from [markdown-cv](http://elipapa.github.io/markdown-cv) and the usage is essentially the same. We only provide an alternative styling theme.
+## Quick Start
 
-See Live example of this template [here](http://wodenimoni.com/nimo-markdown-cv/).
+```sh
+npm run dev
+```
 
-***
+Open the printed URL, usually:
 
-## Getting started
+```text
+http://127.0.0.1:4000
+```
 
-To start, simply [fork the nimo-markdown-cv repo](https://github.com/wodeni/nimo-markdown-cv)
+Edit `index.md`. The dev server rebuilds automatically and refreshes the
+browser preview.
 
-![](https://help.github.com/assets/images/help/repository/fork_button.jpg)
+## Export PDF
 
-Your resume content will be contained in `index.md`, which has an example cv. Start by modifying `index.md`! To see the result, you have two options:
+From the terminal:
 
-## Using Github Pages to publish it online
+```sh
+npm run pdf
+```
 
-1. Go to *Settings* of you git repo. ![](assets/README-5d16f.png)
-2. In the *Github Pages* section, choose *master branch*, which will automatically build your cv and serve it on your free GitHub Pages website. ![](assets/README-0669e.png)
-3. Head to *yourusername*.github.io/nimo-markdown-cv to see your beautiful CV.
+From the local preview, click `Export PDF`.
 
-Any change you want to make to your CV from then on would have to be done on the `master` branch and will be immediately rendered by Github Pages.
+The generated file is:
 
-## Build it locally and print a PDF
+```text
+resume.pdf
+```
 
-1. [install jekyll](https://jekyllrb.com/docs/installation/) on your computer. `gem install jekyll` will do for most users.
-2. Clone your fork on your computer
-3. Type `jekyll serve` and you'll be able to see your CV on your local host (the default address is http://localhost:4000).
-4. You can edit the `index.md` file and see changes live in your browser.
-5. To print a PDF, just press *Print*. Print and web CSS media queries should take care of the styling.
+If Chrome is not in a standard location, set:
 
-## Build it locally by docker
+```sh
+CHROME_PATH="/path/to/chrome" npm run pdf
+```
 
-1. Clone your fork on your computer
-2. Type `make build` to set up service
-3. Type `make` or `make start`  to start service, then your can open `localhost:4000` on your local host to see your CV
-4. You can edit the `index.md` file and see changes live in your browser.
-5. Since the `jekyll-pdf` does not work well with this repo, try using Chrome's print feature, just right-click in your browser and click *print* tag
+## Resume Markdown Conventions
 
-## Generating PDFs in one command
+The renderer is intentionally resume-specific:
 
-You can optionally integrate [jekyll-pdf](https://github.com/abeMedia/jekyll-pdf) to the package and automatically generate the PDF along with the HTML version. See more instructions in the [repo](https://github.com/abeMedia/jekyll-pdf). As of 02/07/2019, `jekyll-pdf` does not work well with this repo.
+- `#` is the candidate name.
+- The first paragraph after `#` is the headline; following paragraphs before the first `##` become compact profile metadata.
+- `##` starts a resume section.
+- `### Entry title \`date or meta\`` starts an entry with right-aligned metadata.
+- An italic first paragraph under an entry becomes the role line.
+- Bullets are compact and print-safe.
+- `<div class="page-break"></div>` is supported, but should be used sparingly.
 
+Example:
+
+```md
+## 工作经历
+
+### **蓝色光标集团（BlueFocus）** `2023.11 - 至今`
+
+_高级前端开发工程师 · 广告营销 ToB_
+
+- 主导组件库建设与 AI 应用工程化落地。
+```
+
+## Commands
+
+```sh
+npm run dev      # live local preview
+npm run build    # build _site/index.html
+npm run pdf      # build and export resume.pdf
+npm run clean    # remove generated files
+```
+
+`make dev`, `make build`, `make pdf`, and `make clean` are equivalent wrappers.
+
+## Project Structure
+
+```text
+index.md                  resume content
+media/resume.css          screen and print design
+src/resume-markdown.mjs   resume-specific Markdown renderer
+src/site-builder.mjs      static HTML builder
+src/pdf-exporter.mjs      Chrome PDF exporter
+scripts/dev.mjs           live preview server
+scripts/build.mjs         build command
+scripts/export-pdf.mjs    PDF command
+```
