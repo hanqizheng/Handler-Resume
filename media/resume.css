@@ -22,10 +22,10 @@
   --accent: #1d6f8f;
   --accent-strong: #16546d;
 
-  --body-size: 8.65pt;
-  --body-leading: 1.29;
-  --section-size: 11.4pt;
-  --entry-size: 9.25pt;
+  --body-size: 8.45pt;
+  --body-leading: 1.32;
+  --section-size: 13pt;
+  --entry-size: 10pt;
 }
 
 * {
@@ -185,7 +185,7 @@ a:hover {
 }
 
 .resume-tagline {
-  margin: 1.75mm 0 0;
+  margin: 1.95mm 0 0;
   color: var(--text);
   font-size: 9.2pt;
   font-weight: 650;
@@ -193,24 +193,24 @@ a:hover {
 }
 
 .resume-meta {
-  margin: 0.7mm 0 0;
+  margin: 0.9mm 0 0;
   color: var(--muted);
   line-height: 1.36;
 }
 
 .resume-section {
-  margin-top: 2.5mm;
+  margin-top: 2.85mm;
 }
 
 .resume-hero + .resume-section {
-  margin-top: 3.15mm;
+  margin-top: 3.75mm;
 }
 
 .resume-section h2 {
   display: flex;
   align-items: center;
   gap: 2.8mm;
-  margin: 0 0 1.25mm;
+  margin: 0 0 1.35mm;
   color: var(--text);
   font-size: var(--section-size);
   font-weight: 850;
@@ -227,11 +227,11 @@ a:hover {
 }
 
 .resume-entry {
-  margin-top: 1.45mm;
+  margin-top: 1.55mm;
 }
 
 .resume-entry + .resume-entry {
-  margin-top: 1.9mm;
+  margin-top: 2.05mm;
 }
 
 .entry-header {
@@ -239,7 +239,7 @@ a:hover {
   gap: 4mm;
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 0.35mm;
+  margin-bottom: 0.5mm;
   break-after: avoid;
 }
 
@@ -260,7 +260,7 @@ a:hover {
 }
 
 .entry-role {
-  margin: 0 0 0.65mm;
+  margin: 0 0 0.82mm;
   color: var(--muted);
   font-style: italic;
 }
@@ -268,7 +268,7 @@ a:hover {
 .entry-summary,
 .section-text,
 .resume-entry p {
-  margin: 0 0 0.7mm;
+  margin: 0 0 0.78mm;
 }
 
 .section-text {
@@ -277,7 +277,7 @@ a:hover {
 
 .resume-entry ul,
 .resume-section > ul {
-  margin: 0.7mm 0 0;
+  margin: 0.75mm 0 0;
   padding: 0;
   list-style: none;
 }
@@ -285,7 +285,7 @@ a:hover {
 .resume-entry li,
 .resume-section > ul li {
   position: relative;
-  margin: 0 0 0.52mm;
+  margin: 0 0 0.58mm;
   padding-left: 4mm;
   break-inside: avoid;
 }
