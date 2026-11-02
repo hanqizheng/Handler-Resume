@@ -1,14 +1,24 @@
-import { existsSync, statSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, statSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
+import { resolveOutput, resolveSource } from "./config.mjs";
 import { buildSite } from "./site-builder.mjs";
 
-export function exportPdf({ root, output = "resume.pdf", build = true, source = process.env.RESUME_SOURCE || "index.md" } = {}) {
+export function exportPdf({ root, source = resolveSource(), output = resolveOutput(source) } = {}) {
   if (!root) throw new Error("exportPdf requires a root directory");
 
-  const site = build ? buildSite({ root, liveReload: false, source }) : { htmlPath: join(root, "_site", "index.html") };
-  const outputPath = resolve(root, output);
+  // Build into a private temp directory so a running preview server can't overwrite the page mid-export.
+  const outDir = mkdtempSync(join(tmpdir(), "handler-resume-"));
+  try {
+    return printToPdf(buildSite({ root, liveReload: false, source, output, outDir }), resolve(root, output));
+  } finally {
+    rmSync(outDir, { recursive: true, force: true });
+  }
+}
+
+function printToPdf(site, outputPath) {
   const chromePath = findChrome();
 
   if (!chromePath) {

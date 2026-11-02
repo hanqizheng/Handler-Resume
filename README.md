@@ -1,10 +1,10 @@
 # Handler Resume
 
-A focused Markdown resume renderer. The public sample source is `index.md`; the
-project builds a polished HTML preview and exports a print-ready `resume.pdf`
-with Chrome's PDF engine.
+A focused Markdown resume renderer. You write the resume in Markdown, and the project exports a
+**standard A4 PDF** with Chrome's PDF engine. The PDF is the deliverable. The local web page is only
+a live preview of that PDF, and it uses the same page size and margins.
 
-There is no Jekyll, Ruby, Docker, or bundler step in the main workflow.
+No dependencies: Node.js 20+ and a Chrome / Chromium / Edge install are all you need.
 
 ## Quick Start
 
@@ -12,116 +12,112 @@ There is no Jekyll, Ruby, Docker, or bundler step in the main workflow.
 npm run dev
 ```
 
-Open the printed URL, usually:
+Open the printed URL, usually `http://127.0.0.1:4000`. The sidebar shows how many A4 pages the
+resume will print to, and a red dashed line marks each page break.
 
-```text
-http://127.0.0.1:4000
-```
-
-Edit `index.md` for a public sample resume. The dev server rebuilds automatically and refreshes the
-browser preview.
-
-For a real private resume, keep the file out of git and point the renderer at it:
+`index.md` is a public sample. Keep your real resume in a private file:
 
 ```sh
 cp index.md resume.private.md
-npm run dev:private
+npm run dev:private          # Chinese / main resume
+npm run dev:private:en       # resume.en.private.md
 ```
 
-`resume.private.md`, `*.private.md`, `private/`, and `resume*.pdf` are ignored by git.
+## Keeping personal data out of git
 
-If the preview is started by an editor assistant or another temporary tool session, it may stop when
-that session ends. For a persistent local preview, run `npm run dev:private` in your own terminal and
-leave that terminal open.
+- Real content lives only in `*.private.md` files (or under `private/`). They are ignored by git,
+  together with every `resume*.pdf`, `_site/`, and `tmp/`.
+- `RESUME_SOURCE` picks which Markdown file is rendered. It defaults to `index.md`.
+- The preview server only serves the built page and the exported PDF. It never serves the project
+  directory, so private sources and `.git` aren't reachable over HTTP.
 
-For a private English resume, use:
-
-```sh
-npm run dev:private:en
-```
+Before committing, `git status` should never list a private file.
 
 ## Export PDF
 
-From the terminal:
-
 ```sh
-npm run pdf
+npm run pdf                  # index.md             -> resume.pdf
+npm run pdf:private          # resume.private.md    -> resume.pdf
+npm run pdf:private:en       # resume.en.private.md -> resume.en.pdf
 ```
 
-For a private source:
-
-```sh
-npm run pdf:private
-```
-
-For the private English source:
-
-```sh
-npm run pdf:private:en
-```
-
-From the local preview, click `Export PDF`.
-
-The generated file is:
-
-```text
-resume.pdf
-```
-
-If Chrome is not in a standard location, set:
-
-```sh
-CHROME_PATH="/path/to/chrome" npm run pdf
-```
+You can also click **Export PDF** in the preview. The output name comes from the source file name.
+Set `RESUME_OUTPUT=path.pdf` to override it, and `CHROME_PATH=/path/to/chrome` if Chrome isn't in
+a standard location.
 
 ## Resume Markdown Conventions
 
-The renderer is intentionally resume-specific:
-
-- `#` is the candidate name.
-- The first paragraph after `#` is the headline; following paragraphs before the first `##` become compact profile metadata.
-- `##` starts a resume section.
-- `### Entry title \`date or meta\`` starts an entry with right-aligned metadata.
-- An italic first paragraph under an entry becomes the role line.
-- Bullets are compact and print-safe.
-- `<div class="page-break"></div>` is supported, but should be used sparingly.
-
-Example:
-
 ```md
-## 工作经历
+---
+name: 张三
+location: 北京            # added to the meta line unless it already contains it
+phone: "+86 138 0000 0000"
+email: name@example.com
+homepage: example.com
+github: username
+lang: zh-CN               # optional; detected from the content by default
+style:                    # optional; override any CSS variable from media/resume.css
+  body-size: 8.7pt
+  page-margin-y: 9mm
+---
 
-### **示例公司** `2023.01 - 至今`
+# 张三
 
-_高级前端工程师 · 示例业务方向_
+高级前端工程师 | 7 年经验          <- headline (first paragraph after the name)
 
-- 主导组件库建设、复杂页面治理与 AI 应用工程化落地。
+北京 · 本科 · 计算机科学与技术      <- meta line(s)
+
+## 工作经历                         <- section
+
+### **示例公司** `2023.01 - 至今`    <- entry; backtick text is right-aligned meta
+
+_高级前端工程师 · 示例业务方向_      <- role line (an italic paragraph)
+
+- 主导组件库建设与 AI 应用工程化落地。
+  Indented lines continue the same bullet.
+```
+
+- Bullets may use `-`, `*`, or `+`.
+- `<div class="page-break"></div>` forces a page break. Use it sparingly.
+
+### Fitting the page
+
+When the preview reports one page too many, trim the content first. If it's only a line or two
+over, tighten the density in the front matter instead of editing the CSS:
+
+```yaml
+style:
+  body-size: 8.7pt       # default 8.8pt
+  body-leading: 1.32     # default 1.35
+  section-gap: 2.4mm     # default 2.8mm
+  page-margin-y: 7mm     # default 8mm (top/bottom)
+  page-margin-x: 9mm     # default 10mm (left/right)
 ```
 
 ## Commands
 
 ```sh
-npm run dev          # live local preview
-npm run dev:private  # live preview from resume.private.md
-npm run dev:private:en  # live preview from resume.en.private.md
-npm run build        # build _site/index.html
-npm run pdf          # build and export resume.pdf
-npm run pdf:private  # export PDF from resume.private.md
-npm run pdf:private:en  # export resume.en.pdf from resume.en.private.md
-npm run clean        # remove generated files
+npm run dev | dev:private | dev:private:en    # live preview
+npm run pdf | pdf:private | pdf:private:en    # export PDF
+npm run build                                 # build _site/index.html only
+npm test                                      # renderer tests
+npm run clean                                 # remove generated files
 ```
 
-`make dev`, `make build`, `make pdf`, and `make clean` are equivalent wrappers.
+`make dev`, `make private`, `make pdf-private`, and the other `make` targets are equivalent
+wrappers.
 
 ## Project Structure
 
 ```text
-index.md                  resume content
-media/resume.css          screen and print design
+index.md                  public sample resume
+media/resume.css          A4 print design + preview shell
 src/resume-markdown.mjs   resume-specific Markdown renderer
 src/site-builder.mjs      static HTML builder
-src/pdf-exporter.mjs      Chrome PDF exporter
+src/pdf-exporter.mjs      Chrome PDF exporter (builds in a temp dir)
+src/config.mjs            source / output file resolution
 scripts/dev.mjs           live preview server
 scripts/build.mjs         build command
 scripts/export-pdf.mjs    PDF command
+test/                     node:test suite
 ```
