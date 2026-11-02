@@ -1,50 +1,93 @@
 const SELF_CLOSING_PAGE_BREAK = /^<div\s+class=["']page-break["']\s*><\/div>$/i;
 
+// The deliverable is always a standard A4 PDF; the HTML page is only a preview of it.
+const A4 = { width: "210mm", height: "297mm", page: "A4" };
+
 export function renderResumeDocument(markdown, options = {}) {
   const { frontMatter, body } = parseFrontMatter(markdown);
   const content = renderResumeBody(body, frontMatter);
-  const title = frontMatter.name || frontMatter.title || "Resume";
-  const paper = frontMatter.paper || "A4";
+  const title = contactValue(frontMatter.name) || contactValue(frontMatter.title) || "Resume";
+  const lang = contactValue(frontMatter.lang) || detectLang(body);
+  const pdfName = options.pdfName || "resume.pdf";
+  const pdfHref = `/${encodeURI(pdfName)}`;
 
   return `<!doctype html>
-<html lang="zh-CN">
+<html lang="${escapeAttribute(lang)}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(title)} | Resume</title>
     <link rel="stylesheet" href="media/resume.css" />
+    <style>
+${renderPageStyle(A4, frontMatter.style)}
+    </style>
   </head>
   <body>
     <div class="app-shell">
       <main class="preview-stage" aria-label="Resume preview">
-        <article class="resume-paper">
+        <article class="resume-paper" data-paper>
 ${content}
         </article>
       </main>
       <aside class="preview-sidebar" aria-label="Resume tools">
         <div class="tool-brand">
           <p class="tool-title">Handler Resume</p>
-          <p class="tool-subtitle">${escapeHtml(paper)} Markdown resume</p>
+          <p class="tool-subtitle">A4 PDF preview · <span data-pages>–</span></p>
         </div>
         <div class="tool-stack">
-          <button class="tool-button" type="button" data-action="reload">Reload</button>
           <button class="tool-button" type="button" data-action="print">Print</button>
           <button class="tool-button primary" type="button" data-action="export-pdf">Export PDF</button>
-          <a class="tool-button" href="/resume.pdf" target="_blank" rel="noreferrer">Open PDF</a>
+          <a class="tool-button" href="${escapeAttribute(pdfHref)}" target="_blank" rel="noreferrer">Open ${escapeHtml(pdfName)}</a>
         </div>
         <p class="tool-status" data-status><strong>Ready</strong></p>
       </aside>
     </div>
     <script>
-${clientScript(options.liveReload)}
+${clientScript({ liveReload: options.liveReload, pdfHref })}
     </script>
   </body>
 </html>`;
 }
 
+function detectLang(text) {
+  return /[\u4e00-\u9fff]/.test(text) ? "zh-CN" : "en";
+}
+
+const DEFAULT_MARGIN_Y = "8mm";
+const DEFAULT_MARGIN_X = "10mm";
+const SAFE_CSS_VALUE = /^[^;{}<>]+$/;
+const isSafeCssValue = (value) => typeof value === "string" && SAFE_CSS_VALUE.test(value);
+
+/**
+ * Paper size, page margins and optional `style:` front matter overrides for CSS custom properties.
+ * The same margins are used for the screen preview padding and the printed @page, so the
+ * preview matches the PDF.
+ */
+function renderPageStyle(paper, overrides) {
+  const style = overrides && typeof overrides === "object" ? overrides : {};
+  const safe = (value, fallback) => (isSafeCssValue(value) ? value : fallback);
+  const marginY = safe(style["page-margin-y"], DEFAULT_MARGIN_Y);
+  const marginX = safe(style["page-margin-x"], DEFAULT_MARGIN_X);
+  const vars = [
+    `--paper-width: ${paper.width};`,
+    `--paper-height: ${paper.height};`,
+    `--page-margin-y: ${marginY};`,
+    `--page-margin-x: ${marginX};`,
+  ];
+
+  for (const [key, value] of Object.entries(style)) {
+    if (key.startsWith("page-margin") || !/^[a-z][\w-]*$/i.test(key) || !isSafeCssValue(value)) continue;
+    vars.push(`--${key}: ${value};`);
+  }
+
+  return `      :root { ${vars.join(" ")} }
+      @page { size: ${paper.page}; margin: ${marginY} ${marginX}; }`;
+}
+
 export function parseFrontMatter(markdown) {
-  const match = markdown.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
-  if (!match) return { frontMatter: {}, body: markdown };
+  const normalized = markdown.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
+  const match = normalized.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (!match) return { frontMatter: {}, body: normalized };
 
   return {
     frontMatter: parseSimpleYaml(match[1]),
@@ -88,6 +131,7 @@ function renderResumeBody(markdown, data) {
     html: [],
     paragraph: [],
     listOpen: false,
+    listItem: null,
     heroOpen: false,
     sectionOpen: false,
     entryOpen: false,
@@ -122,11 +166,17 @@ function renderResumeBody(markdown, data) {
       continue;
     }
 
-    const listItem = line.match(/^\s*-\s+(.*)$/);
+    const listItem = line.match(/^\s*[-*+]\s+(.*)$/);
     if (listItem) {
       flushParagraph(state);
       openList(state);
-      state.html.push(`            <li>${renderInline(listItem[1])}</li>`);
+      flushListItem(state);
+      state.listItem = listItem[1];
+      continue;
+    }
+
+    if (state.listItem !== null && /^\s+\S/.test(line)) {
+      state.listItem += ` ${trimmed}`;
       continue;
     }
 
@@ -202,6 +252,7 @@ function splitEntryHeading(rawText) {
 
 function flushParagraph(state) {
   if (!state.paragraph.length) return;
+  closeList(state);
 
   const raw = state.paragraph.join("\n").trim();
   const className = paragraphClass(state, raw);
@@ -214,7 +265,9 @@ function renderParagraphText(state, className, raw) {
   if (className === "resume-meta" && !state.heroLocationUsed) {
     const location = contactValue(state.data.location);
     state.heroLocationUsed = true;
-    if (location) return `${renderInline(location)} · ${renderInline(raw).replace(/\n/g, "<br>")}`;
+    if (location && !raw.includes(location)) {
+      return `${renderInline(location)} · ${renderInline(raw).replace(/\n/g, "<br>")}`;
+    }
   }
 
   return renderInline(raw).replace(/\n/g, "<br>");
@@ -243,7 +296,14 @@ function openList(state) {
   state.listOpen = true;
 }
 
+function flushListItem(state) {
+  if (state.listItem === null) return;
+  state.html.push(`            <li>${renderInline(state.listItem)}</li>`);
+  state.listItem = null;
+}
+
 function closeList(state) {
+  flushListItem(state);
   if (!state.listOpen) return;
   state.html.push("            </ul>");
   state.listOpen = false;
@@ -271,18 +331,25 @@ function closeHero(state) {
 
 function renderContact(data) {
   const items = [
-    contactValue(data.phone) && ["Phone", contactValue(data.phone)],
-    contactValue(data.email) && ["Email", contactValue(data.email)],
-    contactValue(data.homepage) && ["Web", contactValue(data.homepage)],
-    contactValue(data.github) && ["GitHub", contactValue(data.github)],
-    contactValue(data.linkedin) && ["LinkedIn", contactValue(data.linkedin)],
+    contactLink(data.phone, (value) => `tel:${value.replace(/[^\d+]/g, "")}`),
+    contactLink(data.email, (value) => `mailto:${value}`),
+    contactLink(data.homepage),
+    contactLink(data.github, (value) => (/^https?:/.test(value) ? value : `https://github.com/${value}`)),
+    contactLink(data.linkedin),
   ].filter(Boolean);
 
   if (!items.length) return "";
 
-  return `            <div class="resume-contact">${items
-    .map(([, value]) => `<span>${renderInline(String(value))}</span>`)
-    .join("")}</div>`;
+  return `            <div class="resume-contact">${items.map((item) => `<span>${item}</span>`).join("")}</div>`;
+}
+
+function contactLink(raw, toHref = (value) => (/^https?:/.test(value) ? value : `https://${value}`)) {
+  const value = contactValue(raw);
+  if (!value) return "";
+
+  const url = (typeof raw === "object" && raw.url) || toHref(value);
+  const label = value.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  return `<a href="${escapeAttribute(url)}">${escapeHtml(label)}</a>`;
 }
 
 function contactValue(value) {
@@ -311,7 +378,7 @@ function renderInline(text) {
     .replace(/\*\*([\s\S]+?)\*\*/g, "<strong>$1</strong>")
     .replace(/__([\s\S]+?)__/g, "<strong>$1</strong>")
     .replace(/(^|[^\*])\*([^*\n]+)\*(?!\*)/g, "$1<em>$2</em>")
-    .replace(/_([^_\n]+)_/g, "<em>$1</em>");
+    .replace(/(^|[^\w])_([^_\n]+)_(?!\w)/g, "$1<em>$2</em>");
 
   for (const [key, html] of tokens) {
     output = output.replaceAll(escapeHtml(key), html).replaceAll(key, html);
@@ -331,15 +398,41 @@ function escapeAttribute(value) {
   return escapeHtml(value).replaceAll('"', "&quot;");
 }
 
-function clientScript(liveReload) {
+function clientScript({ liveReload, pdfHref }) {
   return `const statusEl = document.querySelector("[data-status]");
 const setStatus = (html) => {
   if (statusEl) statusEl.innerHTML = html;
 };
 
-document.querySelector("[data-action='reload']")?.addEventListener("click", () => {
-  window.location.reload();
-});
+// Estimate the printed page count and draw a guide where each page ends.
+const paperEl = document.querySelector("[data-paper]");
+const pagesEl = document.querySelector("[data-pages]");
+function measurePages() {
+  if (!paperEl || !pagesEl) return;
+  paperEl.querySelectorAll(".page-guide").forEach((guide) => guide.remove());
+  const styles = getComputedStyle(paperEl);
+  const padTop = parseFloat(styles.paddingTop);
+  const padBottom = parseFloat(styles.paddingBottom);
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:absolute;visibility:hidden;height:var(--paper-height)";
+  document.body.appendChild(probe);
+  const pageHeight = probe.getBoundingClientRect().height;
+  probe.remove();
+  const contentPerPage = pageHeight - padTop - padBottom;
+  const contentHeight = paperEl.scrollHeight - padTop - padBottom;
+  const pages = Math.max(1, Math.ceil((contentHeight - 1) / contentPerPage));
+  pagesEl.textContent = pages === 1 ? "1 page" : pages + " pages";
+  pagesEl.classList.toggle("is-over", pages > 1);
+  for (let index = 1; index < pages; index += 1) {
+    const guide = document.createElement("div");
+    guide.className = "page-guide";
+    guide.style.top = padTop + index * contentPerPage + "px";
+    guide.dataset.label = "Page " + (index + 1);
+    paperEl.appendChild(guide);
+  }
+}
+document.fonts?.ready.then(measurePages);
+window.addEventListener("load", measurePages);
 
 document.querySelector("[data-action='print']")?.addEventListener("click", () => {
   window.print();
@@ -356,7 +449,7 @@ document.querySelector("[data-action='export-pdf']")?.addEventListener("click", 
     const payload = await response.json();
     if (!response.ok || !payload.ok) throw new Error(payload.error || "PDF export failed");
     setStatus("<strong>PDF ready</strong>");
-    window.open("/resume.pdf?ts=" + Date.now(), "_blank", "noreferrer");
+    window.open(${JSON.stringify(pdfHref)} + "?ts=" + Date.now(), "_blank", "noreferrer");
   } catch (error) {
     setStatus("<strong>PDF export unavailable</strong><br>" + error.message);
   } finally {
@@ -366,10 +459,7 @@ document.querySelector("[data-action='export-pdf']")?.addEventListener("click", 
 });
 
 ${liveReload ? `const events = new EventSource("/__events");
-events.addEventListener("built", () => {
-  setStatus("<strong>Updated</strong>");
-  window.location.reload();
-});
+events.addEventListener("built", () => window.location.reload());
 events.addEventListener("open", () => setStatus("<strong>Live preview</strong>"));
 events.addEventListener("error", () => setStatus("<strong>Reconnecting...</strong>"));` : ""}`;
 }

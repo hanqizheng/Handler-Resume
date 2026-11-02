@@ -1,24 +1,26 @@
 #!/usr/bin/env node
 
+import { spawn, spawnSync } from "node:child_process";
 import { createReadStream, existsSync, readdirSync, statSync, watch } from "node:fs";
 import { createServer } from "node:http";
-import { extname, join, normalize, resolve, dirname } from "node:path";
+import { extname, join, resolve, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildSite } from "../src/site-builder.mjs";
-import { exportPdf } from "../src/pdf-exporter.mjs";
+import { resolveOutput, resolveSource } from "../src/config.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const siteDir = join(root, "_site");
 const host = process.env.HOST || "127.0.0.1";
 const preferredPort = Number(process.env.PORT || 4000);
-const source = process.env.RESUME_SOURCE || "index.md";
+const source = resolveSource();
+const output = resolveOutput(source);
+const childEnv = { ...process.env, RESUME_SOURCE: source, RESUME_OUTPUT: output };
 const clients = new Set();
 const watchers = [];
 const pollers = [];
 
 let currentPort = preferredPort;
 
-build();
+if (!build()) process.exit(1);
 watchSources();
 startServer(preferredPort);
 
@@ -39,14 +41,15 @@ function startServer(port) {
     }
 
     if (requestUrl.pathname === "/__export-pdf" && request.method === "POST") {
-      try {
-        const pdf = exportPdf({ root, source });
-        build();
-        broadcast("built");
-        json(response, 200, { ok: true, outputPath: pdf.outputPath, bytes: pdf.bytes });
-      } catch (error) {
-        json(response, 500, { ok: false, error: error.message });
-      }
+      // Export in a child process so that edits under src/ are always picked up.
+      const child = spawn(process.execPath, [join(root, "scripts/export-pdf.mjs")], { cwd: root, env: childEnv });
+      let log = "";
+      child.stdout.on("data", (chunk) => (log += chunk));
+      child.stderr.on("data", (chunk) => (log += chunk));
+      child.on("close", (code) => {
+        if (code === 0) json(response, 200, { ok: true, output, log: log.trim() });
+        else json(response, 500, { ok: false, error: log.trim() || `PDF export exited with ${code}` });
+      });
       return;
     }
 
@@ -69,31 +72,44 @@ function startServer(port) {
   });
 }
 
+// Only the built site and the exported PDF are served; never the project root (private sources, .git).
 function serveStatic(requestUrl, response) {
-  const pathname = decodeURIComponent(requestUrl.pathname);
-  const relativePath = pathname === "/" ? "index.html" : pathname.slice(1);
-  const candidateRoots = [siteDir, root];
+  let pathname;
+  try {
+    pathname = decodeURIComponent(requestUrl.pathname);
+  } catch {
+    pathname = "";
+  }
 
-  for (const base of candidateRoots) {
-    const filePath = resolve(base, normalize(relativePath));
-    if (!filePath.startsWith(base) || !existsSync(filePath) || statSync(filePath).isDirectory()) continue;
+  const filePath =
+    pathname === `/${output}` ? join(root, output) : resolve(siteDir, `.${pathname === "/" ? "/index.html" : pathname}`);
+  const allowed = filePath === join(root, output) || filePath.startsWith(siteDir + sep);
 
-    response.writeHead(200, { "Content-Type": contentType(filePath) });
-    createReadStream(filePath).pipe(response);
+  if (!allowed || !existsSync(filePath) || statSync(filePath).isDirectory()) {
+    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    response.end("Not found");
     return;
   }
 
-  response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
-  response.end("Not found");
+  response.writeHead(200, { "Content-Type": contentType(filePath), "Cache-Control": "no-store" });
+  createReadStream(filePath).pipe(response);
 }
 
+// Build in a child process so that renderer changes under src/ apply without restarting the server.
 function build() {
-  try {
-    const result = buildSite({ root, liveReload: true, source });
-    console.log(`Built ${result.htmlPath} from ${result.markdownPath}`);
-  } catch (error) {
-    console.error(error);
+  const result = spawnSync(process.execPath, [join(root, "scripts/build.mjs")], {
+    cwd: root,
+    env: { ...childEnv, RESUME_LIVE_RELOAD: "1" },
+    encoding: "utf8",
+  });
+
+  if (result.status === 0) {
+    console.log(result.stdout.trim());
+    return true;
   }
+
+  console.error(result.stderr.trim() || result.stdout.trim());
+  return false;
 }
 
 function watchSources() {
@@ -102,8 +118,7 @@ function watchSources() {
   const rebuildSoon = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      build();
-      broadcast("built");
+      if (build()) broadcast("built");
     }, 120);
   };
 
